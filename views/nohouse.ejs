@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        .row {
+            margin-top: 60px;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">酒店管理系统</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">入住管理
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="/lobby">大堂入住</a>
+                            </li>
+                            <li>
+                                <a href="/zhu">订单入住</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="/nohouse" class="dropdown-toggle">退房管理</a>
+                    </li>
+                    <li>
+                        <a href="/jilu" class="dropdown-toggle">记录查询</a>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">房间管理
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="/find">查询房间</a>
+                            </li>
+                            <li>
+                                <a href="/guanli">新建房间</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="/type" class="dropdown-toggle">房类管理</a>
+                    </li>
+                    <li>
+                        <a href="/tubiao" class="dropdown-toggle">图表显示</a>
+                    </li>
+                    <li>
+                        <a href="/xiugai" class="dropdown-toggle">修改密码</a>
+                    </li>
+                    <li>
+                        <a href="#" class="dropdown-toggle" id="tuichu">退出登录</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+                <p>
+                    <span>请输入房间号:</span>
+                    <input type="text" name="fangjian">
+                    <button class="btn btn-info" id="cha">查询</button>
+                </p>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2" id="guke">
+
+
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+                <button class="btn btn-danger" id="fang">退房</button>
+                <button class="btn btn-default">完成</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/jquery-1.12.3.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+        $("#tuichu").click(function () {
+            $.get("/tuichu", function (data) {
+                alert("退出成功");
+                window.location = "/"
+            })
+        })
+        //搜索
+        $("#cha").click(function () {
+            var hao = $("input[name=fangjian]").val();
+            // console.log(hao);
+            $("#tbody").empty();
+            $.get("/tuifang", function (data) {
+                console.log(data);
+                $.each(data.results, function (i, n) {
+                    console.log(n.zhu);
+                    if (n.fangjian == hao && n.zhu!='已退房') {
+                        var now = n.date.split("-");
+                        var nows = n.dates.split("-");
+                        var sRDate = new Date(now[0], now[1], now[2]);
+                        var eRDate = new Date(nows[0], nows[1], nows[2]);
+                        var days = (eRDate-sRDate)/(24*60*60*1000);
+
+                        var money = n.price*days;
+                        console.log(days);
+                        var str = '<h3>顾客信息:</h3>' +
+                            '<p>&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            ' 证件类型:&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '<span>' + n.shenfen + '</span>' +
+                            ' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '证件号:&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '<span>' + n.hao + '</span>' +
+                            '</p>' +
+                            '<p>&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '姓名:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            ' <span>' + n.people + '</span>' +
+                            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '性别:&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '<span>' + n.sex + '</span>' +
+                                '</p>' +'<br>'+
+                            '<h3>入住信息:</h3>'+
+                           ' <p>&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                '房间号:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                '<span class="fangjian">'+n.fangjian+'</span>'+
+                                                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                               ' 房间类型:&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                '<span class="type">'+n.select+'</span>'+
+                                            '</p>'+
+                            '<p>&nbsp;&nbsp;&nbsp;&nbsp;'+
+                            '剩余数量:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                            '<span class="num">'+n.num+'</span>'+
+                            '</p>'+
+                                            '<p>&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                                '入住日期:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                '<span>'+n.date+'</span>'+
+                                            '</p>'+
+                                            '<p>&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                                '入住人:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                '<span>'+n.people+'</span>'+
+                                            '</p>'+
+                                           ' <p>&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                                '入住天数:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                '<span>'+days+'</span>'+
+                                                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                                '价格:&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                '<span>'+n.price+'</span>'+
+                                            '</p>'+
+                                            '<p>&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                                '消费金额:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                '<span>'+money+'</span>'+
+                            '</p>'
+                            $("#guke").html(str);
+                    }
+                })
+            })
+            var _this=$('.type').html();
+            $.get("/doaddtype", function (data) {
+                $.each(data.results, function (i, n) {
+                    if(_this==n.homename){
+                        console.log(n.price);
+                        $('.qian').html(n.price+'元/每天');
+                    }
+                });
+            });
+        })
+        //退房
+        $("#fang").click(function () {
+            var id=$("input[name=fangjian]").val();
+            var zhuangtai="未入住";
+            console.log(zhuangtai);
+            $.post("/panduan/"+id,{
+                zhuangtai: zhuangtai
+            },function(data) {
+                if (data.result == 1) {
+                    alert("成功")
+                } else {
+                    alert("服务器错误！请联系管理员，怎么联系我也不知道！");
+                }
+            })
+        });
+        $("#fang").click(function () {
+            var sid = $("input[name=fangjian]").val();
+            console.log(sid);
+            var zhuangtai = "已退房";
+            console.log(zhuangtai);
+            window.location='/nohouse';
+            $.post("/yituifang/" + sid, {
+                zhuangtai: zhuangtai
+            }, function (data) {
+                if (data.result == 1) {
+                    alert("成功")
+                } else {
+                    alert("服务器错误！请联系管理员，怎么联系我也不知道！");
+                }
+            })
+        })
+    </script>
+
+</body>
+
+</html>

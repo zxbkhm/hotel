@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>酒店管理系统</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        span{
+            color: #BE7335;
+        }
+        .form-group{
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        p{
+            width: 74%;
+            float: right;
+        }
+        .tishi{
+            width: 225px;
+            position: absolute;
+            top: 90px;
+            left: 345px;
+            color: #BE7335;
+        }
+        #btn{
+            background: #BE7335;
+            color: #000;
+            border: none;
+        }
+        #ma{
+            position: absolute;
+            left: 290px;
+            top: 129px;
+            width: 70px;
+            height: 25px;
+            text-align: center;
+            float: left;
+            font-family:Arial;
+            font-style:italic;
+            font-weight:bold;
+            border:1px solid #ccc;
+            background: #fff;
+            font-size: 19px;
+            line-height: 25px;
+        }
+        b{
+            font-size: 18px;
+            line-height: 25px;
+        }
+        .look{
+            display: none;
+            color: #000;
+            font-size: 18px;
+            font-family:Arial;
+        }
+    </style>
+</head>
+<body>
+<nav class=" navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">酒店管理系统</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/chaxun">订单查询</a></li>
+                <li><a href="/ding">预定房间</a></li>
+                <li><a href="/">退出界面</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/login">酒店管理</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container" style="position: relative;">
+    <div class="col-lg-4">
+        <h1>订单查询！</h1>
+        <br>
+        <div class="form-group">
+            <span>订单查询:</span>
+            <p>
+                <input type="text" name="dingdan" id="dingdan">
+                <span><button id="btn">查询</button></span>
+            </p>
+            <div class="tishi">
+                请输入订房时所留联系人或联系电话
+            </div>
+        </div>
+        <div class="form-group">
+            <span>验证码:</span>
+            <p>
+                <input type="text" name="yanzhengma" id="yanzheng">
+                <div id="ma">
+                <b></b>
+                <b></b>
+                <b></b>
+                <b></b>
+            </div>
+            </p>
+        </div>
+        <div class="form-group">
+            <a href="javascript:;" class="look">查看详情</a>
+        </div>
+    </div>
+
+</div>
+<script src="/js/jquery-1.12.3.min.js"></script>
+<script>
+    var code;
+    function createCode(){
+        code = '';
+        var codeLength = 4;
+        var random = new Array(0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R', 'S','T','U','V','W','X','Y','Z');
+        for(var i = 0; i < codeLength; i++){
+            var index = Math.floor(Math.random()*36);
+            code += random[index];
+        }
+        $('#ma').html(code);
+        $('#ma').css('color',color());
+    }
+    createCode();
+    function validate(){
+        var oValue = $('#yanzheng').val().toUpperCase();
+        if(oValue ==0){
+            alert('请输入验证码');
+        }else if(oValue != code){
+            alert('验证码不正确，请重新输入');
+            $('#yanzheng').val('');
+            createCode();
+        }else{
+            $.get("/findding",function (data) {
+                    for(var i=0;i<data.result.length;i++){
+                        if($("#dingdan").val()==data.result[i].phone){
+                            $(".look").css("display","block");
+                            $(".look").click(function () {
+                                $(".look").attr("href","./jieguo.html?"+$("#dingdan").val());
+                            })
+                        }else if($("#dingdan").val()==data.result[i].peoples){
+                            $(".look").css("display","block");
+                            $(".look").click(function () {
+                                $(".look").attr("href","./jieguo.html?"+$("#dingdan").val());
+                            })
+                        }
+                    }
+                })
+            }
+        }
+    function color(){
+        var color = "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + ")";
+        return color;
+    }
+    $("#ma").click(function (){
+        createCode();
+    })
+    $("#btn").click(function () {
+        validate();
+    })
+</script>
+</body>
+</html>

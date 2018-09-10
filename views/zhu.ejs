@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>酒店管理系统</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            color: #000;
+        }
+
+        span {
+            color: #000;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+            margin-left: 55px;
+        }
+
+        p {
+            width: 74%;
+            float: right;
+        }
+
+        .tishi {
+            width: 225px;
+            position: absolute;
+            top: 90px;
+            left: 430px;
+            color: #BE7335;
+        }
+
+        #btn {
+            background: #BE7335;
+            color: #000;
+            border: none;
+        }
+
+        b {
+            font-size: 18px;
+            line-height: 25px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">酒店管理系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">入住管理 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/lobby">大堂入住</a></li>
+                        <li><a href="/zhu">订单入住</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/nohouse" class="dropdown-toggle">退房管理</a>
+                </li>
+                <li>
+                    <a href="/jilu" class="dropdown-toggle">记录查询</a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">房间管理 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/find">查询房间</a></li>
+                        <li><a href="/guanli">新建房间</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/type" class="dropdown-toggle">房类管理</a>
+                </li>
+                <li>
+                    <a href="/tubiao" class="dropdown-toggle">图表显示</a>
+                </li>
+                <li>
+                    <a href="/xiugai" class="dropdown-toggle">修改密码</a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-toggle" id="tuichu">退出登录</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container" style="position: relative;">
+    <div class="col-lg-6">
+        <h1>订单查询！</h1>
+        <br>
+        <div class="form-group">
+            <span>订单查询:</span>
+            <p>
+                <input type="text" name="dingdan" id="dingdan">
+                <span><button id="btn">查询</button></span>
+            </p>
+            <div class="tishi">
+                请输入订房时所留联系人或联系电话
+            </div>
+        </div>
+        <h1>订单详情！</h1>
+        <br>
+        <div id="tbody">
+
+        </div>
+
+        <h1>顾客信息</h1>
+        <div class="form-group">
+            <span>证件类型</span>
+            <select name="" id="shenfen">
+                <option value="身份证">身份证</option>
+            </select>
+            <span>证件号:</span>
+            <input type="text" name="hao">
+        </div>
+        <div class="form-group">
+            <span>姓名:</span>
+            <input type="text" name="name">
+            <span>性别</span>
+            <select name="" id="sex">
+                <option value="男">男</option>
+                <option value="女">女</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-success" id="que">确定</button>
+        </div>
+    </div>
+
+</div>
+<script src="/js/jquery-1.12.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+        $("#tuichu").click(function () {
+            $.get("/tuichu", function () {
+                alert("退出成功");
+                window.location = "/"
+            })
+        })
+        $.get('/leibie', function (data) {
+            $.each(data.results, function (i, n) {
+                $("<option value=" + n.homename + "name=" + 'typ' + "></option>").html(n.homename).appendTo($('#type'));
+            });
+        })
+        $("#btn").click(function () {
+            $.get("/findding", function (data) {
+                for (var i = 0; i < data.result.length; i++) {
+                    console.log(data.result[i]);
+                    if ($("#dingdan").val() == data.result[i].people) {
+                        var str =
+                            ' <div class="form-group">' +
+                            '            <b>订单号:</b>' +
+                            '            <p>' +
+                            '                <span>' + 12 + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>入住日期:</b>' +
+                            '            <p>' +
+                            '                <span class="data">' + data.result[i].date + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>离开日期:</b>' +
+                            '            <p>' +
+                            '                <span class="datas">' + data.result[i].dates + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>房间类型:</b>' +
+                            '            <p>' +
+                            '                <span class="select">' + data.result[i].select + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>剩余数量:</b>' +
+                            '            <p>' +
+                            '                <span class="num">' + data.result[i].num + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>入住人姓名:</b>' +
+                            '            <p>' +
+                            '                <span class="people">' + data.result[i].people + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>联系人:</b>' +
+                            '            <p>' +
+                            '                <span class="peoples">' + data.result[i].peoples + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>联系人电话:</b>' +
+                            '            <p>' +
+                            '                <span class="phone">' + data.result[i].phone + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>留言:</b>' +
+                            '            <p>' +
+                            '                <span class="txt">' + data.result[i].txt + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            '       <div class="form-group">' +
+                            '               <span>价格:</span>' +
+                            '               <span class="qian"></span>' +
+                            '       &nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '               <span>请选择房间</span>' +
+                            '                   <select  id="typenum">' +
+
+                            '                   </select>' +
+                            '       </div>'
+
+                        $("#tbody").html(str);
+
+                    }
+                    else if ($("#dingdan").val() == data.result[i].phone) {
+                        var str =
+                            ' <div class="form-group">' +
+                            '            <b>订单号:</b>' +
+                            '            <p>' +
+                            '                <span>' + 12 + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>入住日期:</b>' +
+                            '            <p>' +
+                            '                <span class="data">' + data.result[i].date + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>离开日期:</b>' +
+                            '            <p>' +
+                            '                <span class="datas">' + data.result[i].dates + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>房间类型:</b>' +
+                            '            <p>' +
+                            '                <span class="select">' + data.result[i].select + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>剩余数量:</b>' +
+                            '            <p>' +
+                            '                <span class="num">' + data.result[i].num + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>入住人姓名:</b>' +
+                            '            <p>' +
+                            '                <span class="people">' + data.result[i].people + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>联系人:</b>' +
+                            '            <p>' +
+                            '                <span class="peoples">' + data.result[i].peoples + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>联系人电话:</b>' +
+                            '            <p>' +
+                            '               <span class="phone">' + data.result[i].phone + '</span>' +
+                            '            </p>' +
+                            '        </div>' +
+                            ' <div class="form-group">' +
+                            '            <b>留言:</b>' +
+                            '            <p>' +
+                            '                <span class="txt">' + data.result[i].txt + '</span>' +
+                            '            </p>' +
+                            '        </div>'+
+                            '<div class="form-group">' +
+                            '<span>价格:</span>' +
+                            '<span class="qian"></span>' +
+                            '&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '<span>请选择房间</span>' +
+                            '<select  id="typenum">' +
+                            '</select>' +
+                            '</div>'
+                        $("#tbody").html(str);
+                    }
+                }
+                $.get("/houses",function(data){
+                    $("#typenum").empty();
+                    var str="";
+                    var data=data.results;
+                    $.each(data, function (i, n) {
+                        if(n.type==$(".select").html() && n.zhu == "未入住"){
+                            str="<option>"+n.fangjian+"</option>";
+                            $("#typenum").append(str);
+                        }
+                    })
+                })
+
+                    var _this=$('.select').html();
+                    $.get("/doaddtype", function (data) {
+                        $.each(data.results, function (i, n) {
+                            if(_this==n.homename){
+                                $('.qian').html(n.price);
+                            }
+                        });
+                    });
+            })
+        })
+
+        $("#que").click(function () {
+            var sid = $(".people").html();
+            console.log(sid);
+            $.post("/zhufangA/" + sid, {
+                fangjian:$("#typenum option:selected").val(),
+                shenfen: $("#shenfen").val(),
+                hao: $("input[name=hao]").val(),
+                sex: $("#sex").val(),
+                price:$('.qian').html(),
+            }, function (data) {
+                console.log(data);
+                alert("确认入住");
+                window.location = "/zhu";
+            })
+            var id = $("#typenum").val();
+            console.log(id);
+            var zhuangtai = "已入住";
+            $.post("/panduan/"+id,{
+                zhuangtai: zhuangtai
+            },function(data) {
+                if (data.result == 1) {
+                    alert("成功")
+                } else {
+                    alert("服务器错误！请联系管理员，怎么联系我也不知道！");
+                }
+            })
+        })
+
+
+
+</script>
+<script>
+
+</script>
+</body>
+</html>

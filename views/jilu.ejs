@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!--<link href="css/bootstrap.min.css" rel="stylesheet">-->
+    <!--<link href="css/style.css" rel="stylesheet">-->
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/jquery-ui.css" />
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+    <!--PQ Grid files-->
+    <link rel="stylesheet" href="/css/pqgrid.min.css" />
+    <script src="/js/pqgrid.min.js"></script>
+    <!--PQ Grid Office theme-->
+    <link rel="stylesheet" href="/themes/office/pqgrid.css" />
+    <script src="/js/bootstrap.min.js"></script>
+    <style>
+        .row {
+            margin-top: 60px;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">酒店管理系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">入住管理
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="/lobby">大堂入住</a>
+                        </li>
+                        <li>
+                            <a href="/zhu">订单入住</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/nohouse" class="dropdown-toggle">退房管理</a>
+                </li>
+                <li>
+                    <a href="/jilu" class="dropdown-toggle">记录查询</a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">房间管理
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="/find">查询房间</a>
+                        </li>
+                        <li>
+                            <a href="/guanli">新建房间</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/type" class="dropdown-toggle">房类管理</a>
+                </li>
+                <li>
+                    <a href="/tubiao" class="dropdown-toggle">图表显示</a>
+                </li>
+                <li>
+                    <a href="/xiugai" class="dropdown-toggle">修改密码</a>
+                </li>
+                <li>
+                    <a href="/" class="dropdown-toggle" id="tuichu">退出登录</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container" style="position: relative;">
+    <h1>记录查询</h1>
+    <div id="grid" style="margin-top:20px;"></div>
+</div>
+<script>
+    bootstrapButton = $.fn.button.noConflict();
+    $.fn.bootstrapBtn = bootstrapButton;
+    $.get("/jiluall",function (data) {
+        console.log(data)
+        $.each(data.results, function (i, n) {
+            console.log(n.date);
+            var now = n.date.split("-");
+            var nows = n.dates.split("-");
+            var sRDate = new Date(now[0], now[1], now[2]);
+            var eRDate = new Date(nows[0], nows[1], nows[2]);
+            var days = (eRDate - sRDate) / (24 * 60 * 60 * 1000);
+            var money = days * n.price;
+            n.price = money
+        })
+            var dataobj = data.results;
+            var obj = {
+                width: "100%",
+                height: 500,
+                title: "不知道叫啥",
+                resizable: true,
+                draggable: false,
+                dataModel: {
+                    data: dataobj
+                },
+                // selectionModel: { type: 'none', subtype:'incr', cbHeader:true, cbAll:true},
+                pageModel: { type: "local", rPP:10, strRpp: "{0}", strDisplay: "{0} to {1} of {2}" ,rPPOptions:[10,20,30]},
+                colModel: [
+                    {title: "入住时间", width: 100, dataType: "string", dataIndx: "date",editable:false},
+                    {title: "退房时间", width: 250, dataType: "string", dataIndx: "dates",editable:false},
+                    {title: "入住人", width: 250, dataType: "string", dataIndx: "people",editable:false},
+                    {title: "联系人", width: 250, dataType: "string", dataIndx: "peoples",editable:false},
+                    {title: "证件号", width: 250, dataType: "string", dataIndx: "hao",editable:false},
+                    {title: "性别", width: 250, dataType: "string", dataIndx: "sex",editable:false},
+                    {title: "房间号", width: 250, dataType: "string", dataIndx: "fangjian",editable:false},
+                    {title: "房间类型", width: 250, dataType: "string", dataIndx: "select",editable:false},
+                    {title: "入住状态", width: 250, dataType: "string", dataIndx: "zhu",editable:false},
+                    {title: "消费金额", width: 250, dataType: "string", dataIndx: "price",editable:false},
+                    {title: "", dataIndx: "state", maxWidth: 30, minWidth: 30, align: "center",
+                        cb: { header: true, all: false },
+                        type: 'checkBoxSelection', cls: 'ui-state-default', resizable: false, sortable: false, editable: false
+                    }
+                ],
+                toolbar: {
+                    items: [
+                        { type: "<span style='margin:5px;'>Filter</span>" },
+                        { type: 'textbox', attr: 'placeholder="请搜索"', cls: "filterValue", listeners: [{ 'keyup': function (evt, ui) {
+                                    var $grid = $(this).closest('.pq-grid'),
+                                        $value = $grid.find(".filterValue"),
+                                        value = $value.val();
+                                    $("#grid").pqGrid( "filter", {
+                                        oper: 'replace',
+                                        data: [
+                                            { dataIndx: 'fangjian', condition: 'contain', value: value }
+                                        ]
+                                    });
+                                }}] }
+                    ]
+                }
+            }
+            var $grid=$("#grid").pqGrid(obj);
+    })
+</script>
+</body>
+</html>

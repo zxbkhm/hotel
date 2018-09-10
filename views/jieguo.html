@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=GBK"/>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <style>
+        p {
+            width: 75%;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<nav class=" navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1"
+                    aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">酒店管理系统</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="/chaxun">订单查询</a></li>
+                <li><a href="/ding">预定房间</a></li>
+                <li><a href="/">退出界面</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/login">酒店管理</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="col-lg-4 nei">
+        <h1 style="color: red">欢迎光临！</h1>
+        <br>
+        <div class="body">
+
+        </div>
+        <div>
+            <button class="update btn btn-info" type='button' data-toggle='modal' data-target='#myModal1'>修改订单</button>
+            <button class="delbtn btn btn-danger">取消订单</button>
+        </div>
+        <br>
+        <a href="/">返回首页</a>
+        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">编辑</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="biaodan2" action="/doadd" method="post">
+                            <p>
+                            <p>
+                                <span>入住日期:</span>
+                                <input type="date" class="form-control" name="date"/>
+                            </p>
+                            <p>
+                                <span>离店日期:</span>
+                                <input type="date" class="form-control" name="dates"/>
+                            </p>
+                            <p>
+                                <span>房间类型:</span>
+                                <input type="text" class="form-control" name="select" placeholder="平方米"/>
+                            </p>
+                            <p>
+                                入住人姓名:
+                                <input type="text" class="form-control" name="people" disabled>
+                            </p>
+                            <p>
+                                联系人姓名
+                                <input type="text" class="form-control" name="peoples"/>
+                            </p>
+                            <p>
+                                联系电话
+                                <input type="text" class="form-control" name="phone"/>
+                            </p>
+                            <p>
+                                留言
+                                <textarea name="txt" id="txt" cols="30" rows="10"></textarea>
+                            </p>
+                            </p>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="ok">ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery-1.12.3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script>
+    $.get("/findding", function (results) {
+        var search = window.location.search;
+        var phone = search.split("?")[1]
+        for (var i = 0; i < results.result.length; i++) {
+            if (phone == results.result[i].phone) {
+                var str = ' <div class="form-group">' +
+                    '            <b>入住日期:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].date + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>离开日期:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].dates + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>房间类型:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].select + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>入住人姓名:</b>' +
+                    '            <p>' +
+                    '                <span class="people">' + results.result[i].people + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>联系人:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].peoples + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>联系人电话:</b>' +
+                    '            <p>' +
+                    '                <span class="phone">' + results.result[i].phone + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>留言:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].txt + '</span>' +
+                    '            </p>' +
+                    '        </div>'
+                $(".body").html(str);
+            }
+
+        }
+    })
+    $.get("/findding", function (results) {
+        var url = decodeURI(decodeURI(location.search));
+        var peoples = url.split("?")[1];
+        for (var i = 0; i < results.result.length; i++) {
+            if (results.result[i].peoples == peoples) {
+                var str = ' <div class="form-group">' +
+                    '            <b>入住日期:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].date + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>离开日期:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].dates + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>房间类型:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].select + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>入住人姓名:</b>' +
+                    '            <p>' +
+                    '                <span class="people">' + results.result[i].people + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>联系人:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].peoples + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>联系人电话:</b>' +
+                    '            <p>' +
+                    '                <span class="phone">' + results.result[i].phone + '</span>' +
+                    '            </p>' +
+                    '        </div>' +
+                    ' <div class="form-group">' +
+                    '            <b>留言:</b>' +
+                    '            <p>' +
+                    '                <span>' + results.result[i].txt + '</span>' +
+                    '            </p>' +
+                    '        </div>'
+                $(".body").html(str);
+            }
+        }
+    })
+
+
+    //名字----修改
+    $(".nei").delegate('.update', 'click', function () {
+        var id = $(".people").html();
+        console.log(id);
+        $.get("/jieguo/" + id, function (data) {
+            console.log(data);
+            if (data.result == -1) {
+                alert("查无此人");
+            } else {
+                $("input[name=date]").val(data.result.date);
+                $("input[name=dates]").val(data.result.dates);
+                $("input[name=select]").val(data.result.select);
+                $("input[name=people]").val(data.result.people);
+                $("input[name=peoples]").val(data.result.peoples);
+                $("input[name=phone]").val(data.result.phone);
+                $("#txt").val(data.result.txt);
+            }
+        })
+    })
+    $("#ok").click(function () {
+        var id = $(".people").html();
+        $.post("/jieguo/" + id,{
+            date:$("input[name=date]").val(),
+            dates:$("input[name=dates]").val(),
+            select:$("input[name=select]").val(),
+            people:$("input[name=people]").val(),
+            peoples:$("input[name=peoples]").val(),
+            phone:$("input[name=phone]").val(),
+            txt:$("#txt").val()
+        },function(data){
+            if(data.result == 1){
+                alert("修改成功！");
+                window.location = "/jieguo.html?"+id;
+            }else{
+                alert("服务器错误！请联系管理员，怎么联系我也不知道！");
+            }
+        })
+    })
+    $(".nei").delegate(".delbtn", "click", function () {
+        var id = $(".people").html();
+        console.log(id);
+        var $this = $(this);
+        $.ajax({
+            url: "/doaddjieguo/" + id,
+            type: "delete",
+            success: function (data) {
+                if (data.result == 1) {
+                    alert("取消成功");
+                    $this.parents("tr").remove();
+                    window.location.href = '/ding'
+                } else {
+                    alert("服务器错误！");
+                }
+            }
+        });
+    })
+
+</script>
+</body>
+</html>

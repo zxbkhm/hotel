@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .nei{
+            border: 1px solid #ccc;
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">酒店管理系统</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >入住管理 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/lobby">大堂入住</a></li>
+                        <li><a href="/zhu">订单入住</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/nohouse" class="dropdown-toggle" >退房管理</a>
+                </li>
+                <li>
+                    <a href="/jilu" class="dropdown-toggle" >记录查询</a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">房间管理 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/find">查询房间</a></li>
+                        <li><a href="/guanli">新建房间</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/type" class="dropdown-toggle">房类管理</a>
+                </li>
+                <li>
+                    <a href="/tubiao" class="dropdown-toggle">图表显示</a>
+                </li>
+                <li>
+                    <a href="/xiugai" class="dropdown-toggle">修改密码</a>
+                </li>
+                <li>
+                    <a href="/" class="dropdown-toggle" id="tuichu" >退出登录</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="col-lg-12" style=" margin-top: 45px;">
+        <div id="tbody"></div>
+        <div id="bodys"></div>
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery-1.12.3.min.js"></script>
+<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+<script>
+    $.get("/shuju",function (data) {
+        $.each(data.results,function (i,n) {
+                var str=`
+                <div class="col-lg-2 nei">
+                    <h5>${data.results[i].type}</h5>
+                    <div>
+                        <p>${data.results[i].fangjian}</p>
+                        <p>${data.results[i].dizhi}</p>
+                        <p>${data.results[i].txt}</p>
+                        <p class="zhu">${data.results[i].zhu}</p>
+                    </div>
+                </div>`;
+                $("#tbody").append(str);
+        })
+
+        for(var i=0;i<$(".nei").length;i++){
+            var This = $(".nei").eq(i);
+            var zhu = $(".nei").eq(i).children("div").children().eq(3).html();
+            if(zhu=='未入住'){
+                This.css("background-color","#F8F8F8");
+            }else if(zhu=='已入住'){
+                This.css("background-color","skyblue");
+            }
+        }
+    })
+</script>
+</body>
+</html>
